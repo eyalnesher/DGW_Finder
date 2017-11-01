@@ -82,7 +82,7 @@ def packet_actions(packet):
                 log.close()
                 sys.exit()
 
-    else:
+    else:   # We are already know the MAC address
 
         sendp((Ether(dst=ETHER_BROADCAST) / ARP(op=3, hwsrc=dmac)), verbose=False)
 
@@ -96,8 +96,18 @@ def packet_actions(packet):
 
 def main():
     """
-
-    :return:
+    The program find out who is the Default Gateway (DGW) of the subnet.
+    By sniffing packets, the program can determinate two IP addresses which have the same MAC address.
+    Because every IP address has one MAC address, clearly one of the IP addresses isn't from our subnet, and the
+    MAC address is the MAC address of the Default Gateway (because the network shows us the MAC address of the Default
+    Gateway as the MAC address of IP addresses that isn't from the subnet).
+    After we have the MAC address in our hand, our program is searching for ARP reply packets, and check the source.
+    If the MAC address of the source is the Default Gateway MAC address, the IP address of the source is the IP address
+    of the Default Gateway.
+    At the same time, the program is sending reverse ARP (RARP) packets, and in this action increas the chance a reply
+    ARP packet will be send to us.
+    :return: None
+    :rtype: None
     """
     global log
 
