@@ -8,7 +8,7 @@ from time import time
 
 def time_parsing(inp_time):
     """
-    turning time from time units format to seconds
+    Turning time from time units format to seconds
     :param inp_time: The time in time units format
     :type inp_time: str
     :return: The time in seconds
@@ -81,11 +81,11 @@ def starting_process():
     log.insert(INSERT, updated_result)
 
 
-
 def main():
     """
     The GUI of the DGW finder.
-    :return:
+    :return: None
+    :rtype: None
     """
     global log
 
