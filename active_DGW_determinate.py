@@ -1,7 +1,6 @@
 #!/usr/bin/python
 
 from scapy.all import *
-import time
 
 imap = {}   # Dictionary that maps between IP Addresses and MAC addresses
 dmac = ""    # The MAC address of the Default Gateway
@@ -49,18 +48,7 @@ def packet_actions(packet):
     global dmac
     global dip
     global imap
-    global starting_time
-    global run_time
     global log
-
-    # Running time checking
-    current_time = time.time()
-    if current_time - starting_time > run_time:
-        if dmac == "":
-            log.write("The Default Gateway could not be found")
-        else:
-            log.write("The IP address of the Default Gateway could not be found")
-        sys.exit()
 
     # Saving the packet
     packets.append(packet)
@@ -81,7 +69,7 @@ def packet_actions(packet):
             dmac = ""
 
         elif dmac != "":  # If the MAC address of the default Gateway was found right now
-            log.write("The MAC address of the Default Gateway is " + dmac)
+            log.write("The MAC address of the Default Gateway is " + dmac + "\n")
 
             # Checking for ARP and Revers ARP (RARP) packets:
             for p in packets:
@@ -91,6 +79,7 @@ def packet_actions(packet):
                 dip = arp_checker(arpacket, dmac)
             if dip != "":
                 log.write("The IP address of the Default Gateway is " + dip)
+                log.close()
                 sys.exit()
 
     else:
@@ -100,22 +89,19 @@ def packet_actions(packet):
         if ARP in packet:
             dip = arp_checker(packet, dmac)
             if dip != "":
-                print "The IP address of the Default Gateway is " + dip
+                log.write("The IP address of the Default Gateway is " + dip)
+                log.close()
                 sys.exit()
 
 
-def main(running_time=float("inf")):
+def main():
     """
 
     :return:
     """
-    global starting_time
-    global run_time
     global log
 
     log = open(r"result.log", "w")
-    run_time = running_time
-    starting_time = time.time()
 
     sniff(prn=packet_actions)
 
